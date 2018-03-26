@@ -1,0 +1,65 @@
+version: '2.0'
+
+services:
+  zookeeper:
+    image: zookeeper
+    container_name: zookeeper
+    restart: always
+
+  nimbus:
+    image: storm
+    container_name: nimbus
+    command: storm nimbus
+    depends_on:
+      - zookeeper
+    links:
+      - zookeeper
+    restart: always
+    ports:
+      - 6627:6627
+    volumes:
+      - /home/mac/Downloads/storm-twitter-top-hashtags-master/topology/target:/code
+
+  supervisor1:
+    image: storm
+    container_name: supervisor1
+    command: storm supervisor
+    depends_on:
+      - nimbus
+      - zookeeper
+    links:
+      - nimbus
+      - zookeeper
+    restart: always
+
+  ui:
+    image: storm
+    container_name: storm_ui
+    command: storm ui
+    links:
+      - nimbus
+      - zookeeper
+    restart: always
+    ports:
+      - 8080:8080
+
+  redis:
+    image: redis
+    container_name: redis
+    depends_on:
+      - nimbus
+      - zookeeper
+      - supervisor1
+    restart: always
+    ports:
+      - 6379:6379
+
+  redis-browser:
+    image: birkof/redis-browser
+    container_name: redis-browser
+    command: --url redis://redis:6379 -b 0.0.0.0
+    depends_on:
+      - redis
+    restart: always
+    ports:
+      - 4567:4567
