@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" ng-app="TopNTwitterTag">
+	<head>
+		<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	</head>
+
+	<body ng-controller="myCtrl">
+		<div class="container">
+			<h1 class="display-4" style="padding-bottom:20px">Top 10 Trending #HashTag#</h1>
+			<table class="table">
+			  <thead>
+				<tr>
+				  <th scope="col">#</th>
+				  <th scope="col">Tag</th>
+				  <th scope="col">Count</th>
+				</tr>
+			  </thead>
+			  <tbody>
+				<tr ng-repeat="record in records">
+				  <th scope="row">{{$index+1}}</th>
+				  <td>{{record.ht}}</td>
+				  <td>{{record.count}}</td>
+				</tr>
+			  </tbody>
+			</table>
+		</div>
+	   <script src="angular.js"></script>
+		<script>
+			var app = angular.module('TopNTwitterTag', []);
+			app.controller('myCtrl', function($scope, $http) {
+				$scope.records = null;
+				$scope.dataupdate = function(){
+					$http.get("http:localhost:8181")
+					.then(function(response) {
+						$scope.records = response.data;
+					});
+				}
+				
+				setInterval(function(){
+				  $scope.dataupdate();
+				}, 1000)
+			});
+		</script>
+	</body>
+</html>

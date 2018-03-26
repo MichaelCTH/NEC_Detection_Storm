@@ -18,7 +18,7 @@ services:
     ports:
       - 6627:6627
     volumes:
-      - /home/mac/Downloads/storm-twitter-top-hashtags-master/topology/target:/code
+      - ./target:/code
 
   supervisor1:
     image: storm

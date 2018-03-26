@@ -8,13 +8,18 @@ import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Tuple;
 
+import redis.clients.jedis.Jedis;
+
 public class RedisBolt extends BaseRichBolt{
     private HashMap<String, Long> counts = null;
     private Hashtable<String,Long> TopN = null;
+    private Jedis jedis = null;
+
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
         this.counts = new HashMap<>();
         this.TopN = new Hashtable<>();
+        this.jedis = new Jedis("redis");
     }
 
     public void execute(Tuple input) {
@@ -22,8 +27,15 @@ public class RedisBolt extends BaseRichBolt{
         Long newcount = input.getLongByField("count");
         this.counts.put(hashtag, newcount);
 
-        if (TopN(hashtag,newcount))
-            System.out.println("Result:"+this.TopN);
+        if (TopN(hashtag,newcount)) {
+            //System.out.println("Result:" + this.TopN);
+            jedis.flushAll();
+            Iterator it = TopN.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
+                jedis.hset("hash_tag",pair.getKey().toString(), pair.getValue().toString());
+            }
+        }
     }
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
