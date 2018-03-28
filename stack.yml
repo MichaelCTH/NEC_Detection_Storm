@@ -1,4 +1,4 @@
-version: '2.0'
+version: '3.0'
 
 services:
   zookeeper:
@@ -47,19 +47,7 @@ services:
     image: redis
     container_name: redis
     depends_on:
-      - nimbus
       - zookeeper
-      - supervisor1
     restart: always
     ports:
       - 6379:6379
-
-  redis-browser:
-    image: birkof/redis-browser
-    container_name: redis-browser
-    command: --url redis://redis:6379 -b 0.0.0.0
-    depends_on:
-      - redis
-    restart: always
-    ports:
-      - 4567:4567

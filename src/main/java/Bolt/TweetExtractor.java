@@ -1,7 +1,5 @@
 package Bolt;
 
-import java.util.Map;
-
 import com.google.common.base.CharMatcher;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -10,10 +8,13 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
-import twitter4j.HashtagEntity;
+
 import twitter4j.Status;
 
-public class HashTagExtractor extends BaseRichBolt{
+import java.util.Map;
+
+public class TweetExtractor extends BaseRichBolt {
+
     private OutputCollector collector;
 
     @Override
@@ -24,17 +25,18 @@ public class HashTagExtractor extends BaseRichBolt{
     @Override
     public void execute(Tuple tuple) {
         Status status = (Status)tuple.getValue(0);
+        String ori_tweet = status.getText();
+        if(status.getRetweetedStatus() != null){
+            ori_tweet = status.getRetweetedStatus().getText();
+        }
 
-        for (HashtagEntity hashtag : status.getHashtagEntities()) {
-            //Emit each hashtag
-            if(CharMatcher.ASCII.matchesAllOf(hashtag.getText())) {
-                this.collector.emit(new Values(hashtag.getText()));
-            }
+        if(CharMatcher.ASCII.matchesAllOf(status.getText())) {
+            this.collector.emit(new Values(status.getText(),ori_tweet));
         }
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("hashtag"));
+        declarer.declare(new Fields("tweet","ori_tweet"));
     }
 }

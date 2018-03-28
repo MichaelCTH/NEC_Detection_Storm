@@ -50,15 +50,12 @@
     </repositories>
 
     <dependencies>
-        <!-- Storm bits -->
         <dependency>
             <groupId>org.apache.storm</groupId>
             <artifactId>storm-core</artifactId>
             <version>${storm.version}</version>
-            <!-- keep storm out of the jar-with-dependencies -->
             <scope>provided</scope>
         </dependency>
-        <!-- twitter4j for accessing Twitter -->
         <dependency>
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-core</artifactId>
@@ -90,6 +87,11 @@
             <version>2.9.0</version>
             <type>jar</type>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.7.0</version>
         </dependency>
     </dependencies>
 

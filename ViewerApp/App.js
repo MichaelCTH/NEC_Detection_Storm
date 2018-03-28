@@ -14,28 +14,31 @@ const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', true);
   
   client.hgetall("hash_tag", function (err, object) {
-	  
-    var output = "[";
-    var counter = 0;
+	    var output = "[";
+	    var counter = 0;
+		try {
+		    var items = Object.keys(object).map(function(key) {
+		    return [key, object[key]];
+		    });
 
-    var items = Object.keys(object).map(function(key) {
-    return [key, object[key]];
-    });
-
-    items.sort(function(first, second) {
-        return second[1] - first[1];
-    });
-      
-    for (var i = 0; i < items.length; i++){ 
-        output+= `{\"ht\":\"`+items[i][0]+`\", \"count\":\"`+items[i][1]+`\"}`;
-        if (i+1 != items.length) {
-          output += ",";
-        }
-    }
-
+		    items.sort(function(first, second) {
+		        return second[1] - first[1];
+		    });
+		      
+		    for (var i = 0; i < items.length; i++){ 
+		        output+= `{\"ht\":\"`+items[i][0]+`\", \"count\":\"`+items[i][1]+`\"}`;
+		        if (i+1 != items.length) {
+		          output += ",";
+		        }
+		    }
+		}catch(err){
+			console.log(err);
+		}
 	    res.write(output+']');
 	  	res.end();
   });
+
+	
 });
 
 server.listen(port, hostname, () => {

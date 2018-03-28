@@ -8,6 +8,7 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 import org.apache.storm.utils.Utils;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import twitter4j.*;
@@ -40,7 +41,6 @@ public class LiveTwitterSpout extends BaseRichSpout{
 
     @Override
     public void nextTuple() {
-        //collector.emit(new Values("hello world this is a test"));
         Status status = queue.poll();
         if (status == null) {
             Utils.sleep(50);

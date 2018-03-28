@@ -13,32 +13,39 @@ import redis.clients.jedis.Jedis;
 public class RedisBolt extends BaseRichBolt{
     private HashMap<String, Long> counts = null;
     private Hashtable<String,Long> TopN = null;
-    private Jedis jedis = null;
+    //private Jedis jedis = null;
 
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
         this.counts = new HashMap<>();
         this.TopN = new Hashtable<>();
-        this.jedis = new Jedis("redis");
+        //this.jedis = new Jedis("redis",6379);
     }
 
     public void execute(Tuple input) {
-        String hashtag = input.getStringByField("hashtag");
+        String hashtag = input.getStringByField("ori_tweet");
         Long newcount = input.getLongByField("count");
         this.counts.put(hashtag, newcount);
 
         if (TopN(hashtag,newcount)) {
-            //System.out.println("Result:" + this.TopN);
-            jedis.flushAll();
-            Iterator it = TopN.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
-                jedis.hset("hash_tag",pair.getKey().toString(), pair.getValue().toString());
+            try {
+                //jedis.flushAll();
+                Iterator it = TopN.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry pair = (Map.Entry) it.next();
+                    //jedis.hset("ori_tweet", pair.getKey().toString(), pair.getValue().toString());
+                    System.out.println(pair.getKey().toString()+" | "+ pair.getValue().toString());
+                }
+                System.out.println("==================================================================");
+            }
+            catch(Exception e){
+                System.out.println(e.getMessage());
             }
         }
     }
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        // No output
     }
 
     public boolean TopN(String hashtag, long newcount){
@@ -61,7 +68,5 @@ public class RedisBolt extends BaseRichBolt{
             if(fr) {TopN.put(hashtag,newcount);return true;}
             else{return false;}
         }
-
-
     }
 }
