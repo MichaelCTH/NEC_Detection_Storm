@@ -1,9 +1,6 @@
 
-import Bolt.AFINN_Sentiment_Analysis;
-import Bolt.RedisBolt;
+import Bolt.*;
 
-import Bolt.TweetExtractor;
-import Bolt.Tweet_Count;
 import Spout.LiveTwitterSpout;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.Config;
@@ -22,7 +19,8 @@ public class NEC_Detection_Topology {
     public static void main(String[] args) throws Exception {
         LiveTwitterSpout spout = new LiveTwitterSpout();
         TweetExtractor extractor = new TweetExtractor();
-        AFINN_Sentiment_Analysis analyzer = new AFINN_Sentiment_Analysis();
+        //AFINN_Sentiment_Analysis analyzer = new AFINN_Sentiment_Analysis();
+        StanfordNLP analyzer = new StanfordNLP();
         Tweet_Count counter = new Tweet_Count();
         RedisBolt redis = new RedisBolt();
 

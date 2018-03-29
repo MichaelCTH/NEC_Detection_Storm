@@ -25,7 +25,7 @@ public class AFINN_Sentiment_Analysis extends BaseRichBolt {
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
         this.collector=collector;
         this.AFINN = new HashMap<>();
-
+        AFINN_Score_Load();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class AFINN_Sentiment_Analysis extends BaseRichBolt {
             }
         }
 
-        if (score <= 100) {
+        if (score <= 0) {
             this.collector.emit(new Values(ori_tweet));
         }
     }
@@ -57,7 +57,6 @@ public class AFINN_Sentiment_Analysis extends BaseRichBolt {
         String fileName = "AFINN-111.txt";
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-
             String line;
             while ((line = br.readLine()) != null) {
                 String[] tmp = line.split(" ");
@@ -66,7 +65,5 @@ public class AFINN_Sentiment_Analysis extends BaseRichBolt {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 }
