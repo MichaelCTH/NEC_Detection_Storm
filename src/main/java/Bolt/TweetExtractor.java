@@ -25,18 +25,19 @@ public class TweetExtractor extends BaseRichBolt {
     @Override
     public void execute(Tuple tuple) {
         Status status = (Status)tuple.getValue(0);
+
         String ori_tweet = status.getText();
         if(status.getRetweetedStatus() != null){
             ori_tweet = status.getRetweetedStatus().getText();
         }
 
         if(CharMatcher.ASCII.matchesAllOf(status.getText())) {
-            this.collector.emit(new Values(status.getText(),ori_tweet));
+            this.collector.emit(new Values(status.getText(),ori_tweet,tuple.getValue(1)));
         }
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("tweet","ori_tweet"));
+        declarer.declare(new Fields("tweet","ori_tweet","timestamp"));
     }
 }

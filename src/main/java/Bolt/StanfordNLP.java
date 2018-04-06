@@ -49,19 +49,17 @@ public class StanfordNLP extends BaseRichBolt {
                     mainSentiment = sentiment;
                     longest = partText.length();
                 }
-
             }
         }
 
         if(mainSentiment <= 1) {
-            //System.out.println(ori_tweet + " | " + mainSentiment);
-            this.collector.emit(new Values(ori_tweet));
+            //System.out.println(tweet + " | " + mainSentiment);
+            this.collector.emit(new Values(ori_tweet, tuple.getValue(2)));
         }
-
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("ori_tweet"));
+        declarer.declare(new Fields("ori_tweet", "timestamp"));
     }
 }

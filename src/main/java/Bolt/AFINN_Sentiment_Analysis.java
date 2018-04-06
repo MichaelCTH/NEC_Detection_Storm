@@ -44,13 +44,13 @@ public class AFINN_Sentiment_Analysis extends BaseRichBolt {
         }
 
         if (score <= 0) {
-            this.collector.emit(new Values(ori_tweet));
+            this.collector.emit(new Values(ori_tweet,tuple.getValue(2)));
         }
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("ori_tweet"));
+        declarer.declare(new Fields("ori_tweet","timestamp"));
     }
 
     private void AFINN_Score_Load(){

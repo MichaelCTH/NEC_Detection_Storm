@@ -45,13 +45,13 @@ public class LiveTwitterSpout extends BaseRichSpout{
         if (status == null) {
             Utils.sleep(50);
         } else {
-            this.collector.emit(new Values(status));
+            this.collector.emit(new Values(status, System.currentTimeMillis()));
         }
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("tweet"));
+        declarer.declare(new Fields("tweet", "timestamp"));
     }
 
     @Override

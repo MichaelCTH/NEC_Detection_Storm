@@ -30,11 +30,11 @@ public class Tweet_Count extends BaseRichBolt {
         }
         count++;
         this.counts.put(ori_tweet, count);
-        this.collector.emit(new Values(ori_tweet,count));
+        this.collector.emit(new Values(ori_tweet,count, input.getValue(1)));
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("ori_tweet","count"));
+        declarer.declare(new Fields("ori_tweet","count", "timestamp"));
     }
 }

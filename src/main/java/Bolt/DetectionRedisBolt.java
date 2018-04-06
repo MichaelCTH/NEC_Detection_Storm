@@ -10,33 +10,32 @@ import org.apache.storm.tuple.Tuple;
 
 import redis.clients.jedis.Jedis;
 
-public class RedisBolt extends BaseRichBolt{
+public class DetectionRedisBolt extends BaseRichBolt{
     private HashMap<String, Long> counts = null;
     private Hashtable<String,Long> TopN = null;
-    //private Jedis jedis = null;
+    private Jedis jedis = null;
 
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
         this.counts = new HashMap<>();
         this.TopN = new Hashtable<>();
-        //this.jedis = new Jedis("redis",6379);
+        this.jedis = new Jedis("redis",6379);
+        jedis.flushAll();
     }
 
     public void execute(Tuple input) {
         String hashtag = input.getStringByField("ori_tweet");
         Long newcount = input.getLongByField("count");
-        this.counts.put(hashtag, newcount);
 
+        this.counts.put(hashtag, newcount);
         if (TopN(hashtag,newcount)) {
             try {
-                //jedis.flushAll();
+                jedis.flushAll();
                 Iterator it = TopN.entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry pair = (Map.Entry) it.next();
-                    //jedis.hset("ori_tweet", pair.getKey().toString(), pair.getValue().toString());
-                    System.out.println(pair.getKey().toString()+" | "+ pair.getValue().toString());
+                    jedis.hset("ori_tweet", pair.getKey().toString(), pair.getValue().toString());
                 }
-                System.out.println("==================================================================");
             }
             catch(Exception e){
                 System.out.println(e.getMessage());
@@ -48,7 +47,7 @@ public class RedisBolt extends BaseRichBolt{
         // No output
     }
 
-    public boolean TopN(String hashtag, long newcount){
+    private boolean TopN(String hashtag, long newcount){
         boolean fr = false;
         if(this.TopN.isEmpty() || this.TopN.size() < 10){
             TopN.put(hashtag,newcount);
