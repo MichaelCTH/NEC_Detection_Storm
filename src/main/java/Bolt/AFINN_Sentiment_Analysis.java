@@ -38,14 +38,12 @@ public class AFINN_Sentiment_Analysis extends BaseRichBolt {
         int score = 0;
 
         for(String word : words){
-            if(this.AFINN.containsKey(word)){
+            if(this.AFINN.containsKey(word))
                 score += this.AFINN.get(word);
-            }
         }
 
-        if (score <= 0) {
+        if (score <= 0)
             this.collector.emit(new Values(ori_tweet,tuple.getValue(2)));
-        }
     }
 
     @Override

@@ -8,13 +8,13 @@
 
 	<body ng-controller="myCtrl">
 		<div class="container">
-			<h1 class="display-4" style="padding-bottom:20px">Top 10 Trending #HashTag#</h1>
+			<h1 class="display-4" style="padding-bottom:20px">Top 10 Tweets that caused Negative Emontional Replies</h1>
 			<table class="table">
 			  <thead>
 				<tr>
 				  <th scope="col">#</th>
-				  <th scope="col">Tag</th>
-				  <th scope="col">Count</th>
+				  <th scope="col">Tweet</th>
+				  <th scope="col"># of Replies with Negative Emotion</th>
 				</tr>
 			  </thead>
 			  <tbody>
@@ -35,9 +35,13 @@
 			app.controller('myCtrl', function($scope, $http) {
 				$scope.records = null;
 				$scope.dataupdate = function(){
-					$http.get("http:localhost:8181")
+					$http.get("http://localhost:8181")
 					.then(function(response) {
 						$scope.records = response.data;
+						for(var i = 0; i < $scope.records.length;i++){
+							$scope.records[i].ht = decodeURI($scope.records[i].ht);
+							$scope.records[i].count = decodeURI($scope.records[i].count)
+						}
 					});
 				}
 				

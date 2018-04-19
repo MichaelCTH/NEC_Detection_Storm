@@ -13,12 +13,12 @@ const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   res.setHeader('Access-Control-Allow-Credentials', true);
   
-  client.hgetall("hash_tag", function (err, object) {
+  client.hgetall("ori_tweet", function (err, object) {
 	    var output = "[";
 	    var counter = 0;
 		try {
 		    var items = Object.keys(object).map(function(key) {
-		    return [key, object[key]];
+		    	return [key, object[key]];
 		    });
 
 		    items.sort(function(first, second) {
@@ -26,7 +26,7 @@ const server = http.createServer((req, res) => {
 		    });
 		      
 		    for (var i = 0; i < items.length; i++){ 
-		        output+= `{\"ht\":\"`+items[i][0]+`\", \"count\":\"`+items[i][1]+`\"}`;
+		        output+= `{\"ht\":\"`+encodeURI(items[i][0])+`\", \"count\":\"`+encodeURI(items[i][1])+`\"}`;
 		        if (i+1 != items.length) {
 		          output += ",";
 		        }

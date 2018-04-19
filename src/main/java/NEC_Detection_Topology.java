@@ -24,14 +24,14 @@ public class NEC_Detection_Topology {
     private static final String Redis_BOLT_ID = "redis-bolt";
     private static final String TOPOLOGY_NAME = "Twitter-SentimentAnalysis-topology";
 
-    private static String Mode = NEC_Mode.LOCAL;
+    private static String Mode = NEC_Mode.LIVE;
 
     public static void main(String[] args) throws Exception {
-        //LiveTwitterSpout spout = new LiveTwitterSpout();
-        Twitter_DB_Spout spout = new Twitter_DB_Spout();
+        LiveTwitterSpout spout = new LiveTwitterSpout();
+        //Twitter_DB_Spout spout = new Twitter_DB_Spout();
         TweetExtractor extractor = new TweetExtractor();
-        //AFINN_Sentiment_Analysis analyzer = new AFINN_Sentiment_Analysis();
-        StanfordNLP analyzer = new StanfordNLP();
+        AFINN_Sentiment_Analysis analyzer = new AFINN_Sentiment_Analysis();
+        //StanfordNLP analyzer = new StanfordNLP();
         Tweet_Count counter = new Tweet_Count();
         BaseRichBolt redis;
 
@@ -53,10 +53,10 @@ public class NEC_Detection_Topology {
         Config config = new Config();
         if(NEC_Mode.equal(Mode,NEC_Mode.LIVE) || NEC_Mode.equal(Mode,NEC_Mode.EVAL)){
             StormSubmitter.submitTopology(TOPOLOGY_NAME, config, builder.createTopology());
-            Utils.sleep(300000);
-            Map conf = Utils.readStormConfig();
-            Nimbus.Client client = NimbusClient.getConfiguredClient(conf).getClient();
-            client.deactivate(TOPOLOGY_NAME);
+            //Utils.sleep(300000);
+            //Map conf = Utils.readStormConfig();
+            //Nimbus.Client client = NimbusClient.getConfiguredClient(conf).getClient();
+            //client.deactivate(TOPOLOGY_NAME);
         }else{
             LocalCluster cluster = new LocalCluster();
             cluster.submitTopology(TOPOLOGY_NAME, config, builder.createTopology());

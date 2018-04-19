@@ -33,9 +33,8 @@ public class StanfordNLP extends BaseRichBolt {
     public void execute(Tuple tuple) {
         String tweet = tuple.getValue(0).toString();
         String ori_tweet = tuple.getValue(1).toString();
-
-
         int mainSentiment = 0;
+
         if (tweet != null && tweet.length() > 0) {
             int longest = 0;
             Annotation annotation = this.pipeline.process(tweet);
@@ -52,10 +51,8 @@ public class StanfordNLP extends BaseRichBolt {
             }
         }
 
-        if(mainSentiment <= 1) {
-            //System.out.println(tweet + " | " + mainSentiment);
+        if(mainSentiment <= 1)
             this.collector.emit(new Values(ori_tweet, tuple.getValue(2)));
-        }
     }
 
     @Override
