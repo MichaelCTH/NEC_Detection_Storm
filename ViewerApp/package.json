@@ -1,0 +1,15 @@
+{
+  "name": "necd_viewer",
+  "version": "1.0.0",
+  "author": "Tonghao Chen",
+  "license": "MIT",
+  "description": "a viewer for nec_detection",
+  "main": "App.js",
+  "scripts": {
+    "start": "node App.js"
+  },
+  "dependencies": {
+    "package.json": "^2.0.1",
+    "redis": "^2.8.0"
+  }
+}
